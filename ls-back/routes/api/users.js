@@ -52,6 +52,7 @@ router.post("/register", async (req, res) => {
                                 console.log('Error occured while inserting')
                             } else {
                                 console.log('Inserted record', mongoresponse.ops[0]);
+                                return res.status(200).json(mongoresponse.ops[0]);
                             }
                         });
                     });
@@ -62,9 +63,6 @@ router.post("/register", async (req, res) => {
     }
     catch(e){
         console.log(e);
-    }
-    finally{
-        client.close();
     }
 
 });
