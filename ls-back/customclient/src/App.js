@@ -3,15 +3,18 @@ import './App.css';
 import Navbar from './components/Navbar';
 import Sidenav from './components/Sidenav';
 import Products from './components/Products';
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom"
-import React, { Component } from 'react'
+import { BrowserRouter as Router, Switch, Route, Link, Redirect, useHistory, withRouter} from "react-router-dom";
+import React, { Component } from 'react';
+import axios from 'axios';
+
+
 
 class App extends Component {
   constructor(props) {
     super(props);
     this.handleSearchChange = this.handleSearchChange.bind(this);
     this.handleSearchSubmit = this.handleSearchSubmit.bind(this);
-    this.state = { searchterm: '' };
+    this.state = { searchterm: '', searchclick:null, foundData:null};
   }
 
   handleSearchChange = event => {
@@ -20,20 +23,23 @@ class App extends Component {
     });
   }
 
-  handleSearchSubmit = event => {
-    if (this.state.searchterm) {
-      this.props.history.push({
-        pathname:'/products/searchresults',
-        searchterm: this.state.searchterm
+  handleSearchSubmit = e => {
+    alert('Search submitted: '+ this.state.searchterm);
+    
+      axios.get('https://jsonplaceholder.typicode.com/users').then((axres) => {
+      const pull = axres.data;
+      console.log(pull);
+      this.setState({foundData: pull})
       });
+      
 
-    }
+    this.setState({searchclick: true});
+    e.preventDefault();
   }
 
   render() {
     const searchterm = this.state.searchterm;
     console.log(searchterm);
-
     return (
       <Router>
         <div className="App">
@@ -58,7 +64,7 @@ class App extends Component {
                 <Route path='/products/games' render={(props) => <Products category="games" />} />
                 <Route path='/products/weddings' render={(props) => <Products category="weddings" />} />
                 <Route path='/products/other' render={(props) => <Products category="other" />} />
-                <Route path='/products/searchresults' render={(props) => <Products category="" searchterm={this.state.searchterm}/>}></Route>
+                <Route path='/products/searchresults' render={(props) => <Products searchterm={this.state.searchterm} products={this.state.foundData}/>}></Route>
               </Switch>
             </div>
           </container>
@@ -67,4 +73,4 @@ class App extends Component {
     )
   }
 }
-export default App
+export default App;
