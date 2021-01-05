@@ -4,30 +4,25 @@ import axios from 'axios';
 class Products extends Component {
 
     render() {
-        if(this.props.products.length > 0){
+        if(this.props.products){
+            return(
+                <div>
+                    {this.props.products.map(function(product){
+                        return <p>{JSON.stringify(product)}</p>;
+                    })}
+                </div>
+            )
+
+        }else{
             return (
                 <div>
-                    Category: {this.props.category} | 
-                    SearchTerm: {this.props.searchterm} | 
+                    Category: {this.props.category} |
+                    SearchTerm: {this.props.searchterm} |
                     City: {this.props.city}
-                    <ul>
-                        
-                        {
-                            this.props.products.map(function(product){
-                            return <li>{product}</li>;
-                        })}
-                    </ul>
+    
                 </div>
             )
         }
-        else{
-            <div>
-                    Category: {this.props.category} | 
-                    SearchTerm: {this.props.searchterm} | 
-                    City: {this.props.city}
-                </div>
-        }
-        
     }
 }
 

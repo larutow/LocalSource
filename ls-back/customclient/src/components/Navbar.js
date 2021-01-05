@@ -1,12 +1,19 @@
-import React, { Component } from 'react'
+import React, { useState } from 'react'
 import {useHistory} from 'react-router-dom'
 
 function Navbar(props){
-    
-    let history = useHistory();
 
-    function handleButtonClick(){
-        history.push("/products/searchresults");
+    const [searchTerm, setSearchTerm] = useState('')
+    
+    function handleSearchChange(){
+        alert('handlebutton click');
+        
+        // axios.get('https://jsonplaceholder.typicode.com/users').then((axres) => {
+        //   const pull = axres.data;
+        //   console.log(pull);
+        //   this.setState({ foundData: pull })
+        // });
+        // this.setState({ searchclick: true });
     }
 
     return(
@@ -24,7 +31,7 @@ function Navbar(props){
                 <li>
                 <form className="form-inline my-2 my-lg-0" onSubmit = {props.handleSearchSubmit}>
                 <input className="form-control mr-sm-2" type="text" placeholder="Search" value={props.searchterm} onChange={props.handleSearchChange}/>
-                <button className="btn btn-outline-success my-2 my-sm-0" onClick={handleButtonClick}>Search</button>
+                <button className="btn btn-outline-success my-2 my-sm-0">Search</button>
                 </form>
                 </li>
                     
