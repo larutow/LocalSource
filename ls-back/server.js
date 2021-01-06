@@ -4,6 +4,7 @@ const cors = require('cors');
 // const MongoClient = require('mongodb').MongoClient;
 const passport = require('passport');
 const users = require("./routes/api/users");
+const products = require("./routes/api/products");
 const db = require('./db');
 const app = express();
 const port = process.env.PORT || 5000;
@@ -27,4 +28,5 @@ app.use(passport.initialize());
 require("./config/passport")(passport);
 // Routes
 app.use("/api/users", users);
+app.use("/api/products", products)
 

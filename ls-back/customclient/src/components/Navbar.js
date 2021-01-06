@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
-import {useHistory} from 'react-router-dom'
+import {useHistory, NavLink, useRouteMatch, Link} from 'react-router-dom'
+import {Form, Button} from 'react-bootstrap'
+
 
 function Navbar(props){
 
-    const [searchTerm, setSearchTerm] = useState('')
+    let {path, url} = useRouteMatch();
     
     function handleSearchChange(){
         alert('handlebutton click');
@@ -17,8 +19,8 @@ function Navbar(props){
     }
 
     return(
-        <nav className="navbar navbar-expand-lg navbar-light bg-light">
-            <a className="navbar-brand" href="#">LocalSource</a>
+        <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+            <Link to='/' className="navbar-brand" href="#">LocalSource</Link>
             <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span className="navbar-toggler-icon"></span>
             </button>
@@ -26,18 +28,24 @@ function Navbar(props){
             <div className="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul className="navbar-nav mr-auto">
                 <li className="nav-item active">
-                    <a className="nav-link" href="#">Home <span className="sr-only">(current)</span></a>
+                    <NavLink className="nav-link" to="/">Home <span className="sr-only">(current)</span></NavLink>
                 </li>
                 <li>
-                <form className="form-inline my-2 my-lg-0" onSubmit = {props.handleSearchSubmit}>
+                <Form inline className="my-2 my-lg-0" onSubmit = {props.handleSearchSubmit}>
                 <input className="form-control mr-sm-2" type="text" placeholder="Search" value={props.searchterm} onChange={props.handleSearchChange}/>
-                <button className="btn btn-outline-success my-2 my-sm-0">Search</button>
-                </form>
+                <Form.Control as="select">
+                <option>Milwaukee</option>
+                <option>New York City</option>
+                <option>San Francisco</option>
+                </Form.Control>
+                <Button className="mx-1" type="submit">Search</Button>
+                </Form>
                 </li>
                     
                 
                 </ul>
-                <a className="nav-link" href="#">Register</a>
+                <NavLink to='/register' className="mr-2">Register</NavLink>
+                <NavLink to='/login'>Login</NavLink>
             </div>
         </nav>
     );

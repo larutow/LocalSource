@@ -1,9 +1,10 @@
 import React from 'react'
 
-export default function Register() {
+function Register(props) {
     return (
         <div>
-            
+            Register Test
         </div>
     )
 }
+export default Register
