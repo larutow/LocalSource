@@ -11,8 +11,11 @@ router.get("/searchproducts", async (req, res) => {
         // await client.connect();
         const database = db.get().db("LocalSource");
         const collection = database.collection("products-test");
+        const searchproductsQuery = {
 
-        await collection.findOne({ email: req.body.searchterm }).then(products => {
+        }
+
+        await collection.find({ email: req.body.searchterm }).then(products => {
             if (products){ }
         });
     }
@@ -70,8 +73,9 @@ router.post("/uploadinventory", async (req, res) => {
         do{ 
             axios.get(`https://openapi.etsy.com/v2/shops/${shopName}/listings/active?limit=100&offset=${i}&includes=Images&api_key=${etsyKey}`)
             .then(async function(response){
-                //for each product in the inventory
+                //for each product in the inventory offset page
                 for(const result of response.data.results){
+                    //look for if that product exists in the collection
                     await collection.findOne({productname: result.title}).then(function(foundproduct){
                         if(foundproduct){
                             //add this result as a variant to the foundproduct
@@ -126,7 +130,7 @@ router.post("/uploadinventory", async (req, res) => {
     /*Etsy flow:
     //1 - extract last word in URL (shopname)
     //2 - Etsy API request for shop inventory
-        https://openapi.etsy.com/v2/shops/{ShopName}/listings/active?includes=Images&api_key=ri13xa0vjan8omqk3q0jia74
+        https://openapi.etsy.com/v2/shops/{ShopName}/listings/active?includes=Images&api_key=
         While()
         Paginate inventory (for shops w more than 100 items)
     //3 - foreach(etsy inventory item found)
