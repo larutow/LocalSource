@@ -7,20 +7,32 @@ const axios = require ('axios').default;
 require('dotenv').config();
 
 router.get("/searchproducts", async (req, res) => {
-    try{
-        // await client.connect();
-        const database = db.get().db("LocalSource");
-        const collection = database.collection("products-test");
-        const searchproductsQuery = {
+    const searchterm = req.body.searchterm;
+    const city = req.body.city
+    var foundresults = []
+    // await client.connect();
+    const database = db.get().db("LocalSource");
+    const collection = database.collection("products-test");
 
+    let collectionResults = collection.aggregate([
+        {
+            $search: {
+                "text": {
+                    "query": searchterm,
+                    "path": "productname"
+                }
+            }
         }
-
-        await collection.find({ email: req.body.searchterm }).then(products => {
-            if (products){ }
-        });
-    }
-    catch{}
-})
+    ]);
+    
+    foundresults = collectionResults.toArray(function (err, result) {
+        if (err){
+            console.log(err)
+        }else{
+            return res.status(200).json({ message: 'search results found', searchresults: result});
+        }
+    });
+});
 
 router.post("/uploadinventory", async (req, res) => {
     //pass in URL & jwt use JWT to find user
@@ -48,21 +60,21 @@ router.post("/uploadinventory", async (req, res) => {
         //     await collection.findOne({title})
         // }
         //
-        let product = {
-            productname: '',
-            category:'',
-            variants:[
-                {
-                    title: '',
-                    price: 0,
-                    description: '',
-                    img_url: '',
-                    origin_url: '',
-                    profile_id: ''
-                }
+        // let product = {
+        //     productname: '',
+        //     category:'',
+        //     variants:[
+        //         {
+        //             title: '',
+        //             price: 0,
+        //             description: '',
+        //             img_url: '',
+        //             origin_url: '',
+        //             profile_id: ''
+        //         }
                 
-            ]
-        }
+        //     ]
+        // }
         
         const database = db.get().db("LocalSource");
         let collection = database.collection("products-test");
@@ -72,9 +84,9 @@ router.post("/uploadinventory", async (req, res) => {
         let newProducts = [];
         do{ 
             axios.get(`https://openapi.etsy.com/v2/shops/${shopName}/listings/active?limit=100&offset=${i}&includes=Images&api_key=${etsyKey}`)
-            .then(async function(response){
+            .then(async function(estyresponse){
                 //for each product in the inventory offset page
-                for(const result of response.data.results){
+                for(const result of etsyresponse.data.results){
                     //look for if that product exists in the collection
                     await collection.findOne({productname: result.title}).then(function(foundproduct){
                         if(foundproduct){
@@ -130,7 +142,6 @@ router.post("/uploadinventory", async (req, res) => {
     /*Etsy flow:
     //1 - extract last word in URL (shopname)
     //2 - Etsy API request for shop inventory
-        https://openapi.etsy.com/v2/shops/{ShopName}/listings/active?includes=Images&api_key=
         While()
         Paginate inventory (for shops w more than 100 items)
     //3 - foreach(etsy inventory item found)
