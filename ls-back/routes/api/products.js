@@ -62,18 +62,20 @@ router.post("/uploadinventory", async (req, res) => {
         }
         
         const database = db.get().db("LocalSource");
-        let collection = database.collection("products");
+        let collection = database.collection("products-test");
         const etsyKey = process.env.ETSY_API;
         let i = 0;
         let next_offset = null;
+        let newProducts = [];
         do{ 
             axios.get(`https://openapi.etsy.com/v2/shops/${shopName}/listings/active?limit=100&offset=${i}&includes=Images&api_key=${etsyKey}`)
             .then(async function(response){
                 //for each product in the inventory
                 for(const result of response.data.results){
-                    await collection.findOne({title: result.title}).then(function(foundproduct){
+                    await collection.findOne({productname: result.title}).then(function(foundproduct){
                         if(foundproduct){
                             //add this result as a variant to the foundproduct
+                            console.log('product ' + foundproduct.productname + ' already exists in inventory');
                         }else{
                             //create a new product and insert if product is not found in the collection
                             const newProduct = {
@@ -90,7 +92,17 @@ router.post("/uploadinventory", async (req, res) => {
                                     }
                                 ]
                             }
-                            console.log(newProduct);   
+                            newProducts.push(newProduct);
+                        }
+                    }).then(async function(){
+                        for(const count in newProducts){
+                            console.log(newProducts[count]);
+                            try{
+                                await collection.insertOne(newProducts[count]);
+                            }
+                            catch (err){
+                                console.log("Error caught on insertion of products into mongoDB - "+err);
+                            }   
                         }
                     });
 
@@ -101,7 +113,7 @@ router.post("/uploadinventory", async (req, res) => {
         }
         while(next_offset != null);
         
-        
+        return res.status(200).json({message:'inventory uploaded to server - review mongodb colleciton to confirm results'})
     }
 
 
@@ -133,12 +145,7 @@ router.post("/uploadinventory", async (req, res) => {
 
     */
     //Shopify products.json - use res.body.category
-    try{
-        const database = db.get().db("LocalSource");
-        const collection = database.collection("products-test")
-    } catch {
 
-    }
 });
 
 router.put("/updateinventory", async (req, res) => {
