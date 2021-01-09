@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
 import {useHistory, NavLink, useRouteMatch, Link} from 'react-router-dom'
-import {Form, Button} from 'react-bootstrap'
+import {Form, Button, Nav} from 'react-bootstrap'
 
 
 function Navbar(props){
 
     let {path, url} = useRouteMatch();
+    const history = useHistory();
     
     function handleSearchChange(){
         alert('handlebutton click');
@@ -16,6 +17,27 @@ function Navbar(props){
         //   this.setState({ foundData: pull })
         // });
         // this.setState({ searchclick: true });
+    }
+
+    const renderLoginStatusComponents = () =>{
+        if(props.isLoggedIn === true){
+            return (
+            <>
+            <NavLink to='/account' className="mr-2">Account</NavLink>
+            <NavLink to='/' onClick={()=>{
+                localStorage.removeItem('jwtToken');
+                window.location.href = '/';
+                }}>Logout</NavLink>
+            </>
+            )
+        }else{
+            return (
+                <>
+                <NavLink to='/register' className="mr-2">Register</NavLink>
+                <NavLink to='/login'>Login</NavLink>
+                </>
+            )
+        }
     }
 
     return(
@@ -41,11 +63,9 @@ function Navbar(props){
                 <Button className="mx-1" type="submit">Search</Button>
                 </Form>
                 </li>
-                    
-                
+
                 </ul>
-                <NavLink to='/register' className="mr-2">Register</NavLink>
-                <NavLink to='/login'>Login</NavLink>
+                {renderLoginStatusComponents()}
             </div>
         </nav>
     );
