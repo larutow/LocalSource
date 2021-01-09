@@ -16,6 +16,7 @@ class App extends Component {
     super(props);
     this.handleSearchChange = this.handleSearchChange.bind(this);
     this.handleSearchSubmit = this.handleSearchSubmit.bind(this);
+
     this.state = { searchterm: '', searchclick:null, foundData:null};
   }
 
@@ -46,7 +47,7 @@ class App extends Component {
         <div className="App">
           <Navbar searchterm={this.state.searchterm} handleSearchChange={this.handleSearchChange} handleSearchSubmit = {this.handleSearchSubmit} />
           <Switch>
-            <Route path="/login"><Login/></Route>
+            <Route path="/login"><Login handleLoginSubmit ={this.handle} /></Route>
             <Route path="/register"><Register/></Route>
             <Route path ={["/", "/products"]}><Home searchterm={this.state.searchTerm} products={this.state.foundData}/></Route>
           </Switch>

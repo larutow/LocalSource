@@ -68,6 +68,50 @@ router.post("/register", async (req, res) => {
 
 });
 
+
+router.post("/createprofile", async (req,res) => {
+    //Verify signed in user
+    const usertoken = req.body.token; // TBD
+    const userpay = jwt.verify(usertoken, process.env.SECRETORKEY);
+
+
+    try{
+        const database = db.get().db("LocalSource");
+        const collection = database.collection("users-test");
+        await collection.findOne({ _id: userpay.id }).then(user => {
+            if(user){
+                //take in form data and apply to user
+                const filter = {_id: user.id}
+                const profiledata = {
+                    $set:{
+                        shopUrl: req.body.shopUrl,
+                        shopName: req.body.shopName,
+                        shopAddress: req.body.shopAddress,
+                        shop_lat: req.body.shopLat,
+                        shop_lng: req.body.shopLng,
+                        cityName: req.body.cityName
+                    }
+                }
+                collection.updateOne(filter, profiledata, function(mongoerror, mongoresponse){
+                    if(mongoerror){
+                        console.log('Error occured while inserting profile information - ', mongoerror);
+                    }else{
+                        console.log('Updated profile informaiton');
+                        return res.status(200).json(mongoresponse.ops[0]);
+                    }
+                });
+
+            }else{
+                res.status(404).json({token:"token did not match any known user"});
+            }
+        });
+
+    }catch(e){
+        console.log(e);
+    }
+})
+
+
 // @route POST api/users/login
 // @desc Login user and return JWT token
 // @access Public
@@ -95,7 +139,7 @@ router.post("/login", async (req, res) => {
                         // User matched
                         // Create JWT Payload
                         const payload = {
-                            id: user.id,
+                            id: user._id,
                             name: user.name
                         };
                         // Sign token

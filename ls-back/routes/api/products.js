@@ -28,6 +28,7 @@ router.get("/searchproducts", async (req, res) => {
     foundresults = collectionResults.toArray(function (err, result) {
         if (err){
             console.log(err)
+            return res.status(400).json({message:'something went wrong', error: err})
         }else{
             return res.status(200).json({ message: 'search results found', searchresults: result});
         }
