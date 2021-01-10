@@ -35,6 +35,35 @@ router.post("/searchproducts", async (req, res) => {
     });
 });
 
+router.post("/category", async (req, res) => {
+    const category= req.body.category;
+    const city = req.body.city
+    var foundresults = []
+    // await client.connect();
+    const database = db.get().db("LocalSource");
+    const collection = database.collection("products-test");
+
+    let collectionResults = collection.aggregate([
+        {
+            $search: {
+                "text": {
+                    "query": category,
+                    "path": "category"
+                }
+            }
+        }
+    ]);
+    
+    foundresults = collectionResults.toArray(function (err, result) {
+        if (err){
+            console.log(err)
+            return res.status(400).json({message:'something went wrong', error: err})
+        }else{
+            return res.status(200).json({ message: 'category results found', results: result});
+        }
+    });
+});
+
 router.post("/uploadinventory", async (req, res) => {
     //pass in URL & jwt use JWT to find user
     //Etsy Example: https://www.etsy.com/shop/ShelbyPageCeramics

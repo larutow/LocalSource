@@ -25,13 +25,14 @@ const { ObjectID } = require("mongodb");
 // @desc Register user
 // @access Public
 router.post("/register", async (req, res) => {
-    // Form validation
-    const { errors, isValid } = validateRegisterInput(req.body);
-    // Check validation
-    if (!isValid) {
-        return res.status(400).json(errors);
-    }
+    // TODO - Form validation
+    // const { errors, isValid } = validateRegisterInput(req.body);
+    // // Check validation
+    // if (!isValid) {
+    //     return res.status(400).json(errors);
+    // }
     // CONNECT TO AND FIND USER EMAIL, CREATE NEW USER BASED UPON REQ IF EMAIL DOES NOT EXIST
+    console.log(req.body);
     try{
         // await client.connect();
         const database = db.get().db("LocalSource");

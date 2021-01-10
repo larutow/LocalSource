@@ -55,6 +55,12 @@ function Account(props) {
             <Col xs={2}/>
             <Col xs={8}>
         <Form onSubmit = {handleSubmit}>
+            <Form.Group as={Row} controlId="name">
+                <Form.Label column xs={3}>Name</Form.Label>
+                <Col xs={9}>
+                    <Form.Control type="text" placeholder={profile.name} disabled/>
+                </Col>
+            </Form.Group>
             <Form.Group as={Row} controlId="email">
                 <Form.Label column xs={3}>Email</Form.Label>
                 <Col xs={9}>

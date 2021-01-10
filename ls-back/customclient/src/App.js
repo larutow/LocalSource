@@ -23,9 +23,10 @@ class App extends Component {
     super(props);
     this.handleSearchChange = this.handleSearchChange.bind(this);
     this.handleSearchSubmit = this.handleSearchSubmit.bind(this);
+    this.handleDetailsButton = this.handleDetailsButton.bind(this);
     this.setLogin = this.setLogin.bind(this);
 
-    this.state = { searchterm: '', searchclick:null, foundData:null, isLoggedIn: false, userName:''};
+    this.state = { searchterm: '', searchclick:null, foundData:null, isLoggedIn: false, userName:'', detailsProduct:''};
     
   }
 
@@ -46,43 +47,78 @@ class App extends Component {
 
   }
 
-  setLogin = (e,email,pass) =>{
+  setLogin = (e, email, pass) => {
     e.preventDefault();
-        console.log(email);
-        console.log(pass);
-        //axios post - login
-        axios
-            .post("http://localhost:5000/api/users/login", {email: email, password: pass})
-            .then(res => {
-                // Save to localStorage
-                // Set token to localStorage
-                const { token } = res.data;
-                localStorage.setItem("jwtToken", token);
-                // Set token to Auth header
-                setAuthToken(token);
-                // Set current user
-                history.push("/");
-                this.setState({isLoggedIn: true});
+    console.log(email);
+    console.log(pass);
+    //axios post - login
+    axios
+      .post("http://localhost:5000/api/users/login", { email: email, password: pass })
+      .then(res => {
+        // Save to localStorage
+        // Set token to localStorage
+        const { token } = res.data;
+        localStorage.setItem("jwtToken", token);
+        // Set token to Auth header
+        setAuthToken(token);
+        // Set current user
+        history.push("/");
+        this.setState({ isLoggedIn: true });
 
-            })
-            .catch(err =>
-                //login failure - 
-                console.log(err)
-            );
+      })
+      .catch(err =>
+        //login failure - 
+        console.log(err)
+      );
   }
-componentDidMount(){
-  if(localStorage.jwtToken){
-    const token = localStorage.jwtToken;
-    const decoded = jwt_decode(token)
-    const currentTime = Date.now() / 1000;
-    if(decoded.exp < currentTime){
-      //logout (clear token? - render register / login? isLoggedIn = false)
-      this.setState({isLoggedIn: false});
-    }else{
-      this.setState({isLoggedIn: true});
+
+  setRegister = (e, name, email, pass) => {
+    e.preventDefault();
+    console.log(name);
+    console.log(email);
+    console.log(pass);
+    //axios post - login
+    axios
+      .post("http://localhost:5000/api/users/register", { name: name, email: email, password: pass }).then(res => {
+        if(res.data.email){
+          alert(res.data.email);
+        }else{
+          alert("Registration Successful - Please Login");
+        }
+      })
+      .catch(err =>
+        //login failure - 
+        console.log(err)
+      );
+  }
+
+  handleDetailsButton = (product) =>{
+    this.setState({detailsProduct: product}, ()=>{
+      console.log(this.state.detailsProduct);
+      this.forceUpdate();
+    });
+    
+  }
+
+  componentDidMount(){
+    if(localStorage.jwtToken){
+      const token = localStorage.jwtToken;
+      const decoded = jwt_decode(token)
+      const currentTime = Date.now() / 1000;
+      if(decoded.exp < currentTime){
+        //logout (clear token? - render register / login? isLoggedIn = false)
+        this.setState({isLoggedIn: false});
+      }else{
+        this.setState({isLoggedIn: true});
+      }
     }
   }
-}
+
+  componentDidUpdate(prevprops, prevstate){
+    if(prevstate.detailsProduct !== this.state.detailsProduct){
+      history.push('/products/searchresults/details')
+    }
+  }
 
   render() {
     return (
@@ -91,9 +127,10 @@ componentDidMount(){
           <Navbar searchterm={this.state.searchterm} handleSearchChange={this.handleSearchChange} handleSearchSubmit = {this.handleSearchSubmit} isLoggedIn = {this.state.isLoggedIn}/>
           <Switch>
             <Route path="/login"><Login setLogin={this.setLogin}/></Route>
-            <Route path="/register"><Register/></Route>
+            <Route path="/register"><Register setRegister={this.setRegister}/></Route>
             <Route path="/account"><Account/></Route>
-            <Route path ={["/", "/products"]}><Home searchterm={this.state.searchTerm} products={this.state.foundData}/></Route>
+            <Route path ={["/", "/products", "/products/searchresults"]}><Home searchterm={this.state.searchTerm} products={this.state.foundData} handleDetailsButton={this.handleDetailsButton} detailsProduct={this.state.detailsProduct}/></Route>
+            <Route exact path="/products/searchresults/details"><Home searchterm={this.state.searchTerm} products={this.state.foundData} handleDetailsButton={this.handleDetailsButton} detailsProduct={this.state.detailsProduct}/></Route>
           </Switch>
         </div>
       </Router>
