@@ -12,6 +12,11 @@ import Login from './components/Login';
 import Account from './components/Account/Account'
 import setAuthToken from './utils/setAuthToken'
 
+if (localStorage.jwtToken) {
+  // Set auth token header auth
+  const token = localStorage.jwtToken;
+  setAuthToken(token);
+}
 
 class App extends Component {
   constructor(props) {

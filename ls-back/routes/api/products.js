@@ -83,49 +83,47 @@ router.post("/uploadinventory", async (req, res) => {
         let i = 0;
         let next_offset = null;
         let newProducts = [];
-        do{ 
-            axios.get(`https://openapi.etsy.com/v2/shops/${shopName}/listings/active?limit=100&offset=${i}&includes=Images&api_key=${etsyKey}`)
-            .then(async function(estyresponse){
-                //for each product in the inventory offset page
-                for(const result of etsyresponse.data.results){
-                    //look for if that product exists in the collection
-                    await collection.findOne({productname: result.title}).then(function(foundproduct){
-                        if(foundproduct){
-                            //add this result as a variant to the foundproduct
-                            console.log('product ' + foundproduct.productname + ' already exists in inventory');
-                        }else{
-                            //create a new product and insert if product is not found in the collection
-                            const newProduct = {
-                                productname: result.title,
-                                category: result.taxonomy_path[0],
-                                variants:[
-                                    {
-                                        title: 'default-product',
-                                        price: result.price,
-                                        description: result.description,
-                                        img_url: result.Images[0].url_570xN,
-                                        origin_url: result.url,
-                                        profile_id: 'Shelby-Test'
-                                    }
-                                ]
+        do {
+            await axios.get(`https://openapi.etsy.com/v2/shops/${shopName}/listings/active?limit=100&offset=${i}&includes=Images&api_key=${etsyKey}`)
+                .then(async function (response) {
+                    //for each product in the inventory offset page
+                    for (const result of response.data.results) {
+                        //look for if that product exists in the collection
+                        await collection.findOne({ productname: result.title }).then(function (foundproduct) {
+                            if (foundproduct) {
+                                //add this result as a variant to the foundproduct
+                                console.log('product ' + foundproduct.productname + ' already exists in inventory');
+                            } else {
+                                //create a new product and insert if product is not found in the collection
+                                const newProduct = {
+                                    productname: result.title,
+                                    category: result.taxonomy_path[0],
+                                    variants: [
+                                        {
+                                            title: 'default-product',
+                                            price: result.price,
+                                            description: result.description,
+                                            img_url: result.Images[0].url_570xN,
+                                            origin_url: result.url,
+                                            profile_id: 'LynndalePrintTest'
+                                        }
+                                    ]
+                                }
+                                newProducts.push(newProduct);
                             }
-                            newProducts.push(newProduct);
+                        });
+                    }
+                    next_offset = response.data.next_offset;
+                }).then(async function () {
+                    for (const count in newProducts) {
+                        try {
+                            await collection.insertOne(newProducts[count]);
                         }
-                    }).then(async function(){
-                        for(const count in newProducts){
-                            console.log(newProducts[count]);
-                            try{
-                                await collection.insertOne(newProducts[count]);
-                            }
-                            catch (err){
-                                console.log("Error caught on insertion of products into mongoDB - "+err);
-                            }   
+                        catch (err) {
+                            console.log("Error caught on insertion of products into mongoDB - " + err);
                         }
-                    });
-
-                }
-                next_offset = response.data.next_offset;
-            });
+                    }
+                });
             i++;
         }
         while(next_offset != null);

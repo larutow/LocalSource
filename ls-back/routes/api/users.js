@@ -15,6 +15,7 @@ const db = require('../../db');
 const validateRegisterInput = require("../../validation/register");
 const validateLoginInput = require("../../validation/login");
 const { use } = require("passport");
+const ObjectId = require('mongodb').ObjectID;
 
 // // Load User model
 // const User = require("../../models/User");
@@ -71,14 +72,14 @@ router.post("/register", async (req, res) => {
 
 router.post("/createprofile", async (req,res) => {
     //Verify signed in user
-    const usertoken = req.body.token; // TBD
-    const userpay = jwt.verify(usertoken, process.env.SECRETORKEY);
-
+    const usertoken = req.header('Authorization').split(' '); // TBD
+    const userpay = jwt.verify(usertoken[1], process.env.SECRETORKEY);
+    console.log(userpay);
 
     try{
         const database = db.get().db("LocalSource");
         const collection = database.collection("users-test");
-        await collection.findOne({ _id: userpay.id }).then(user => {
+        await collection.findOne({_id: ObjectId(userpay.id)},{projection:{password:0}}).then(user => {
             if(user){
                 //take in form data and apply to user
                 const filter = {_id: user.id}
@@ -106,6 +107,30 @@ router.post("/createprofile", async (req,res) => {
             }
         });
 
+    }catch(e){
+        console.log(e);
+    }
+})
+
+
+router.get("/getprofile", async (req,res) => {
+    //Verify signed in user
+    const usertoken = req.header('Authorization').split(' '); // TBD
+    const userpay = jwt.verify(usertoken[1], process.env.SECRETORKEY);
+    console.log(userpay);
+    try{
+        const database = db.get().db("LocalSource");
+        const collection = database.collection("users-test");
+        await collection.findOne({_id: ObjectId(userpay.id)},{projection:{password:0}}).then(user => {
+            if(user){
+                //take in form data and apply to user
+                        console.log('Found Profile:');
+                        
+                        return res.status(200).json(user);
+                    }else{
+                        return res.status(404).json({token:"token did not match any known user"});
+                    }
+                });
     }catch(e){
         console.log(e);
     }
