@@ -6,7 +6,7 @@ const axios = require ('axios').default;
 
 require('dotenv').config();
 
-router.get("/searchproducts", async (req, res) => {
+router.post("/searchproducts", async (req, res) => {
     const searchterm = req.body.searchterm;
     const city = req.body.city
     var foundresults = []

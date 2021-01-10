@@ -35,10 +35,10 @@ class App extends Component {
     });
   }
 
-  handleSearchSubmit = (e, searchTerm) => {
+  handleSearchSubmit = (e) => {
     e.preventDefault();
-    alert('HandleSearchSubmit function in app.js');
-    axios.get('https://jsonplaceholder.typicode.com/users')
+    alert('HandleSearchSubmit function in app.js - Searchterm:' + this.state.searchterm);
+    axios.post('http://localhost:5000/api/products/searchproducts', {searchterm: this.state.searchterm})
     .then((response) => {
       console.log(response.data);
       this.setState({foundData: response.data});

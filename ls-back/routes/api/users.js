@@ -16,6 +16,7 @@ const validateRegisterInput = require("../../validation/register");
 const validateLoginInput = require("../../validation/login");
 const { use } = require("passport");
 const ObjectId = require('mongodb').ObjectID;
+const { ObjectID } = require("mongodb");
 
 // // Load User model
 // const User = require("../../models/User");
@@ -82,7 +83,7 @@ router.post("/createprofile", async (req,res) => {
         await collection.findOne({_id: ObjectId(userpay.id)},{projection:{password:0}}).then(user => {
             if(user){
                 //take in form data and apply to user
-                const filter = {_id: user.id}
+                const filter = {_id: ObjectId(userpay.id)}
                 const profiledata = {
                     $set:{
                         shopUrl: req.body.shopUrl,
@@ -98,7 +99,7 @@ router.post("/createprofile", async (req,res) => {
                         console.log('Error occured while inserting profile information - ', mongoerror);
                     }else{
                         console.log('Updated profile informaiton');
-                        return res.status(200).json(mongoresponse.ops[0]);
+                        return res.status(200).json({success:'true'});
                     }
                 });
 
