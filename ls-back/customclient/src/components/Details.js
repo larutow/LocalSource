@@ -13,6 +13,7 @@ function Details(props) {
             })
     }, [setProfile]);
 
+    
 
     return (
         <div>
@@ -36,8 +37,8 @@ function Details(props) {
                 <Col xs={6}>
                 <Row><h3>Shop Details:</h3></Row>
                     <Row>Shop Details: Placeholder</Row>
-                    <Row>Shop Website: <a href={profile.shopUrl}>{profile.shopUrl||"n/a"}</a></Row>
-                    <Row>Shop Address: {profile.shopAddress||"n/a"}</Row>
+                    <Row>Shop Website: <a href={profile.shopUrl}>{profile.shopUrl}</a></Row>
+                    <Row>Shop Address: {profile.shopAddress}</Row>
                     <Row>Shop Lng: Placeholder</Row>
                     <Row>Shop Lng: Placeholder</Row>
                     <Row>Shop Google Map: Placeholder</Row>

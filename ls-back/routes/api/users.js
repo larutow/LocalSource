@@ -140,9 +140,6 @@ router.get("/getprofile", async (req,res) => {
 
 router.post("/getprofiledetails", async (req,res) => {
     //Verify signed in user
-    const usertoken = req.header('Authorization').split(' '); // TBD
-    const userpay = jwt.verify(usertoken[1], process.env.SECRETORKEY);
-    console.log(userpay);
     profileid = req.body.profile_id;
     try{
         const database = db.get().db("LocalSource");
