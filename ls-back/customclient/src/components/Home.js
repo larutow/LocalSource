@@ -21,19 +21,19 @@ class Home extends Component {
                     </Col>
                     <Col xs={10}>
                         <Switch>
-                            <Route path='/products/accessories' render={(props) => <Products category="accessories" handleDetailsButton={this.props.handleDetailsButton}/>} />
-                            <Route path='/products/art' render={(props) => <Products category="art" handleDetailsButton={this.props.handleDetailsButton}/>} />
-                            <Route path='/products/bags' render={(props) => <Products category="bags" handleDetailsButton={this.props.handleDetailsButton}/>} />
-                            <Route path='/products/bath' render={(props) => <Products category="bath" handleDetailsButton={this.props.handleDetailsButton}/>} />
-                            <Route path='/products/media' render={(props) => <Products category="media" handleDetailsButton={this.props.handleDetailsButton}/>} />
-                            <Route path='/products/clothing' render={(props) => <Products category="clothing" handleDetailsButton={this.props.handleDetailsButton}/>} />
-                            <Route path='/products/electronics' render={(props) => <Products category="electronics" handleDetailsButton={this.props.handleDetailsButton}/>} />
-                            <Route path='/products/home' render={(props) => <Products category="home" handleDetailsButton={this.props.handleDetailsButton}/>} />
-                            <Route path='/products/jewelry' render={(props) => <Products category="jewelry" handleDetailsButton={this.props.handleDetailsButton}/>} />
-                            <Route path='/products/paperparty' render={(props) => <Products category="paperparty" handleDetailsButton={this.props.handleDetailsButton}/>} />
-                            <Route path='/products/pet' render={(props) => <Products category="pet" handleDetailsButton={this.props.handleDetailsButton}/>} />
-                            <Route path='/products/games' render={(props) => <Products category="games" handleDetailsButton={this.props.handleDetailsButton}/>} />
-                            <Route path='/products/weddings' render={(props) => <Products category="weddings" handleDetailsButton={this.props.handleDetailsButton}/>} />
+                            <Route path='/products/accessories' render={(props) => <Products category="Accessories" handleDetailsButton={this.props.handleDetailsButton}/>} />
+                            <Route path='/products/art' render={(props) => <Products category="Art & Collectibles" handleDetailsButton={this.props.handleDetailsButton}/>} />
+                            <Route path='/products/bags' render={(props) => <Products category="Bags & Purses" handleDetailsButton={this.props.handleDetailsButton}/>} />
+                            <Route path='/products/bath' render={(props) => <Products category="Bath & Beauty" handleDetailsButton={this.props.handleDetailsButton}/>} />
+                            <Route path='/products/media' render={(props) => <Products category="Books, Movies & Music" handleDetailsButton={this.props.handleDetailsButton}/>} />
+                            <Route path='/products/clothing' render={(props) => <Products category="Clothing" handleDetailsButton={this.props.handleDetailsButton}/>} />
+                            <Route path='/products/electronics' render={(props) => <Products category="Electronics & Accessories" handleDetailsButton={this.props.handleDetailsButton}/>} />
+                            <Route path='/products/home' render={(props) => <Products category="Home & Living" handleDetailsButton={this.props.handleDetailsButton}/>} />
+                            <Route path='/products/jewelry' render={(props) => <Products category="Jewelry" handleDetailsButton={this.props.handleDetailsButton}/>} />
+                            <Route path='/products/paperparty' render={(props) => <Products category="Paper & Party Supplies" handleDetailsButton={this.props.handleDetailsButton}/>} />
+                            <Route path='/products/pet' render={(props) => <Products category="Pet Supplies" handleDetailsButton={this.props.handleDetailsButton}/>} />
+                            <Route path='/products/games' render={(props) => <Products category="Toys & Games" handleDetailsButton={this.props.handleDetailsButton}/>} />
+                            <Route path='/products/weddings' render={(props) => <Products category="Weddings" handleDetailsButton={this.props.handleDetailsButton}/>} />
                             <Route path='/products/other' render={(props) => <Products category="other" handleDetailsButton={this.props.handleDetailsButton}/>} />
                             <Route exact path='/products/searchresults' render={(props) => <Products searchterm={this.props.searchterm} products={this.props.products} handleDetailsButton={this.props.handleDetailsButton}/>}></Route>
                             <Route exact path='/products/searchresults/details'><Details detailsProduct={this.props.detailsProduct}/></Route>

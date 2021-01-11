@@ -138,6 +138,30 @@ router.get("/getprofile", async (req,res) => {
     }
 })
 
+router.post("/getprofiledetails", async (req,res) => {
+    //Verify signed in user
+    const usertoken = req.header('Authorization').split(' '); // TBD
+    const userpay = jwt.verify(usertoken[1], process.env.SECRETORKEY);
+    console.log(userpay);
+    profileid = req.body.profile_id;
+    try{
+        const database = db.get().db("LocalSource");
+        const collection = database.collection("users-test");
+        await collection.findOne({_id: ObjectId(profileid)},{projection:{password:0}}).then(user => {
+            if(user){
+                //take in form data and apply to user
+                        console.log('Found Profile:' + user);
+                        
+                        return res.status(200).json(user);
+                    }else{
+                        return res.status(404).json({token:"token did not match any known user"});
+                    }
+                });
+    }catch(e){
+        console.log(e);
+    }
+})
+
 
 // @route POST api/users/login
 // @desc Login user and return JWT token
